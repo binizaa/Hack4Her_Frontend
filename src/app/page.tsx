@@ -14,6 +14,7 @@ import {
   Award,
 } from "lucide-react";
 import Link from "next/link";
+import ProductQuantities from "@/components/product-quantities";
 
 // Componentes adicionales
 import AnimatedParrot from "@/components/animated-parrot";
@@ -138,7 +139,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-
         <div className="lg:col-span-5">
           <AnimatedParrot />
           {/* <GeminiRecommendation /> */}
