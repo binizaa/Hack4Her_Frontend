@@ -2,6 +2,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useState } from "react";
+
 import {
   Trophy,
   Target,
@@ -13,6 +15,13 @@ import {
   Award,
 } from "lucide-react";
 import Link from "next/link";
+<<<<<<< Updated upstream
+=======
+//import ProductQuantities from "@/components/product-quantities";
+//import GeminiRecommendation from "@/components/gemini-recommendation";
+import AnimatedParrot from "@/components/animated-parrot";
+import ProductQuantities from "@/components/product-quantities";
+>>>>>>> Stashed changes
 
 export default function Dashboard() {
   return (
@@ -133,8 +142,16 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
+<<<<<<< Updated upstream
         <div className="lg:col-span-5 hidden lg:block">
           {/* Espacio reservado para el elemento futuro */}
+=======
+        <div className="lg:col-span-5">
+          {/*<GeminiRecommendation />*/}
+          {/* <Tuaimagen /> */}
+          {/* <ProductQuantities /> */}
+          <AnimatedParrot />
+>>>>>>> Stashed changes
         </div>
       </div>
 
