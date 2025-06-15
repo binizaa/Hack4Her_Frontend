@@ -55,6 +55,9 @@ export default function Dashboard() {
             <p className="text-lg mb-6 opacity-90">
               Tu tienda está en la <strong>{userCategory ? `Liga de ${userCategory}` : "Cargando..."}</strong>. ¡Sigue mejorando para alcanzar el Diamante!
             </p>
+            <p className="text-lg mb-6 opacity-90">
+              Tamaño de tienda: <strong>Micro</strong>
+            </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/leagues">
                 <Button

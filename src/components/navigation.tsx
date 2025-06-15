@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Trophy, Target, Gift } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useUser } from "@/context/UserContext";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
@@ -14,20 +15,9 @@ const navigation = [
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { currentUserId, setCurrentUserId, users: dummyUsers } = useUser();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const dummyUsers = [
-    { id: 1, name: "María García", avatar: "https://i.pravatar.cc/150?img=1" },
-    { id: 2, name: "Juan Pérez", avatar: "https://i.pravatar.cc/150?img=2" },
-    { id: 3, name: "Ana López", avatar: "https://i.pravatar.cc/150?img=3" },
-    { id: 4, name: "Carlos Ruiz", avatar: "https://i.pravatar.cc/150?img=4" },
-    {
-      id: 5,
-      name: "Sofía Martínez",
-      avatar: "https://i.pravatar.cc/150?img=5",
-    },
-  ];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -44,6 +34,11 @@ export default function Navigation() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownRef]);
+
+  // console.log para depuración
+  console.log("currentUserId en Navigation:", currentUserId);
+  const currentUser = dummyUsers.find((user) => user.id === currentUserId);
+  console.log("currentUser encontrado:", currentUser);
 
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -76,13 +71,19 @@ export default function Navigation() {
           </nav>
 
           <div className="flex items-center space-x-4" ref={dropdownRef}>
-            <span className="text-sm text-gray-600">María González</span>
+            <span className="text-sm text-gray-600">
+              {dummyUsers.find((user) => user.id === currentUserId)?.name ||
+                "Usuario"}
+            </span>
             <button
               onClick={() => setShowUserDropdown(!showUserDropdown)}
               className="w-8 h-8 bg-gradient-to-r from-[#c31f39] to-[#F97659] rounded-full flex items-center justify-center cursor-pointer overflow-hidden border-2 border-white/50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75 transition-all duration-300"
             >
               <img
-                src="https://i.pravatar.cc/150?img=1"
+                src={
+                  dummyUsers.find((user) => user.id === currentUserId)
+                    ?.avatar || "https://i.pravatar.cc/150?img=1"
+                }
                 alt="User Avatar"
                 className="w-full h-full object-cover"
               />
@@ -90,7 +91,7 @@ export default function Navigation() {
           </div>
 
           {showUserDropdown && (
-            <div className="absolute right-4 top-16 w-64 max-w-[calc(100vw - 32px)] sm:w-64 bg-white rounded-lg shadow-xl py-2 z-30 border border-gray-200 transition-all duration-300 transform origin-top-right scale-100 opacity-100">
+            <div className="absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw - 32px)] sm:w-64 bg-white rounded-lg shadow-xl py-2 z-30 border border-gray-200 transition-all duration-300 transform origin-top-right scale-100 opacity-100">
               <div className="px-4 py-2 text-gray-500 font-semibold text-sm border-b border-gray-100">
                 Cambiar Usuario
               </div>
@@ -98,6 +99,12 @@ export default function Navigation() {
                 <a
                   key={user.id}
                   href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentUserId(user.id);
+                    setShowUserDropdown(false);
+                    console.log("Usuario seleccionado, nuevo ID:", user.id);
+                  }}
                   className="flex items-center px-4 py-2 hover:bg-gray-100 transition-colors duration-200"
                 >
                   <img

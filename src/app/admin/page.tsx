@@ -1,315 +1,229 @@
 "use client";
 
+import type React from "react";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import {
-  Users,
-  TrendingUp,
-  Target,
-  Award,
-  BarChart3,
-  MapPin,
-  Calendar,
-  Activity,
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Upload, X } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 
-const campaignStats = {
-  totalUsers: 1247,
-  activeUsers: 892,
-  completedChallenges: 3456,
-  totalEngagement: 78,
-  averagePoints: 1340,
-};
+export default function AdminPage() {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-const regionData = [
-  { region: "Quito", stores: 342, engagement: 82, avgPoints: 1450 },
-  { region: "Guayaquil", stores: 298, engagement: 75, avgPoints: 1320 },
-  { region: "Cuenca", stores: 156, engagement: 88, avgPoints: 1580 },
-  { region: "Ambato", stores: 123, engagement: 71, avgPoints: 1290 },
-  { region: "Machala", stores: 89, engagement: 79, avgPoints: 1380 },
-];
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-const challengePerformance = [
-  { challenge: "Diversificar Inventario", completion: 67, participants: 456 },
-  { challenge: "Explorar Nuevos Productos", completion: 54, participants: 389 },
-  { challenge: "Optimizar Volumen", completion: 78, participants: 523 },
-  { challenge: "Bundle Productos", completion: 43, participants: 234 },
-];
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-export default function AdminPanel() {
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setSelectedImage(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-[#c31f39]">
-                Panel Admin - Tuali
-              </h1>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-[#c31f39] to-[#F97659] bg-clip-text text-transparent mb-2">
+          Gráfica de consumo de usuarios
+        </h1>
+        <p className="text-gray-600">
+          Sube una imagen para visualizar los datos de consumo
+        </p>
+      </div>
+
+      {/* Upload Area */}
+      <Card className="border-2 border-dashed border-[#A4D4D8] bg-gradient-to-br from-[#A4D4D8]/5 to-[#4DB9E8]/5">
+        <CardContent className="p-8">
+          <div
+            className={`relative w-full min-h-[400px] border-2 border-dashed rounded-xl transition-all duration-300 ${
+              isDragging
+                ? "border-[#c31f39] bg-[#c31f39]/10"
+                : selectedImage
+                ? "border-[#4DB9E8] bg-white"
+                : "border-[#A4D4D8] bg-white/50 hover:border-[#4DB9E8] hover:bg-[#4DB9E8]/5"
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
+            {selectedImage ? (
+              // Imagen cargada
+              <div className="relative w-full h-full min-h-[400px]">
+                <img
+                  src={selectedImage || "/placeholder.svg"}
+                  alt="Gráfica de consumo"
+                  className="w-full h-full object-contain rounded-lg"
+                />
+                <Button
+                  onClick={removeImage}
+                  className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#c31f39] hover:bg-[#a01729] p-0"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+            ) : (
+              // Área de carga
+              <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-center p-8">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#4DB9E8] to-[#A4D4D8] rounded-full flex items-center justify-center mb-6">
+                  <Upload className="w-10 h-10 text-white" />
+                </div>
+
+                <h3 className="text-2xl font-bold text-[#1A1926] mb-4">
+                  Sube tu gráfica de consumo
+                </h3>
+
+                <p className="text-gray-600 mb-6 max-w-md">
+                  Arrastra y suelta una imagen aquí, o haz clic para seleccionar
+                  un archivo desde tu dispositivo
+                </p>
+
+                <div className="space-y-4">
+                  <label htmlFor="image-upload">
+                    <Button
+                      as="span"
+                      className="bg-gradient-to-r from-[#c31f39] to-[#F97659] hover:shadow-lg transition-all duration-300 cursor-pointer"
+                    >
+                      <ImageIcon className="w-5 h-5 mr-2" />
+                      Seleccionar Imagen
+                    </Button>
+                  </label>
+
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+
+                  <p className="text-sm text-gray-500">
+                    Formatos soportados: JPG, PNG, GIF (máx. 10MB)
+                  </p>
+                </div>
+
+                {isDragging && (
+                  <div className="absolute inset-0 bg-[#c31f39]/10 border-2 border-[#c31f39] border-dashed rounded-xl flex items-center justify-center">
+                    <div className="text-center">
+                      <Upload className="w-12 h-12 text-[#c31f39] mx-auto mb-2" />
+                      <p className="text-[#c31f39] font-semibold">
+                        Suelta la imagen aquí
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Additional Info */}
+          {selectedImage && (
+            <div className="mt-6 p-4 bg-gradient-to-r from-[#A4D4D8]/20 to-[#4DB9E8]/20 rounded-lg border border-[#4DB9E8]/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-[#4DB9E8] to-[#A4D4D8] rounded-lg flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#1A1926]">
+                      Gráfica cargada exitosamente
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      La imagen se ha subido correctamente
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={removeImage}
+                  className="border-[#F97659] text-[#F97659] hover:bg-[#F97659] hover:text-white"
+                >
+                  Cambiar Imagen
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <Badge className="bg-[#c31f39]">Arca Continental</Badge>
-              <span className="text-sm text-gray-600">Admin Dashboard</span>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Instructions */}
+      <Card className="mt-6 border-2 border-[#F97659]/30 bg-gradient-to-r from-[#F97659]/5 to-[#c31f39]/5">
+        <CardHeader>
+          <CardTitle className="text-[#1A1926] flex items-center space-x-2">
+            <div className="w-6 h-6 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-full flex items-center justify-center">
+              <span className="text-white text-xs font-bold">i</span>
+            </div>
+            <span>Instrucciones</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-[#4DB9E8] to-[#A4D4D8] rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-white font-bold">1</span>
+              </div>
+              <h3 className="font-semibold text-[#1A1926] mb-2">Selecciona</h3>
+              <p className="text-sm text-gray-600">
+                Elige una imagen de tu gráfica de consumo desde tu dispositivo
+              </p>
+            </div>
+
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-white font-bold">2</span>
+              </div>
+              <h3 className="font-semibold text-[#1A1926] mb-2">Sube</h3>
+              <p className="text-sm text-gray-600">
+                Arrastra y suelta o haz clic para cargar la imagen
+              </p>
+            </div>
+
+            <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-white font-bold">3</span>
+              </div>
+              <h3 className="font-semibold text-[#1A1926] mb-2">Visualiza</h3>
+              <p className="text-sm text-gray-600">
+                La gráfica se mostrará en el área de visualización
+              </p>
             </div>
           </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Usuarios Totales
-                  </p>
-                  <p className="text-3xl font-bold text-[#c31f39]">
-                    {campaignStats.totalUsers}
-                  </p>
-                </div>
-                <Users className="w-8 h-8 text-[#c31f39]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Usuarios Activos
-                  </p>
-                  <p className="text-3xl font-bold text-[#c31f39]">
-                    {campaignStats.activeUsers}
-                  </p>
-                </div>
-                <Activity className="w-8 h-8 text-[#c31f39]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Desafíos Completados
-                  </p>
-                  <p className="text-3xl font-bold text-[#c31f39]">
-                    {campaignStats.completedChallenges}
-                  </p>
-                </div>
-                <Target className="w-8 h-8 text-[#c31f39]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Engagement Promedio
-                  </p>
-                  <p className="text-3xl font-bold text-[#c31f39]">
-                    {campaignStats.totalEngagement}%
-                  </p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-[#c31f39]" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="regions" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="regions">Análisis Regional</TabsTrigger>
-            <TabsTrigger value="challenges">
-              Rendimiento de Desafíos
-            </TabsTrigger>
-            <TabsTrigger value="impact">Impacto de Campaña</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="regions">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <MapPin className="w-5 h-5 text-[#c31f39]" />
-                  <span>Distribución Regional</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {regionData.map((region, index) => (
-                    <div
-                      key={index}
-                      className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-lg"
-                    >
-                      <div>
-                        <h3 className="font-semibold text-[#c31f39]">
-                          {region.region}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {region.stores} tiendas
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Engagement</p>
-                        <div className="flex items-center space-x-2">
-                          <Progress
-                            value={region.engagement}
-                            className="flex-1"
-                          />
-                          <span className="text-sm font-medium">
-                            {region.engagement}%
-                          </span>
-                        </div>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Puntos Promedio</p>
-                        <p className="text-lg font-semibold">
-                          {region.avgPoints}
-                        </p>
-                      </div>
-                      <div className="flex items-center">
-                        <Badge
-                          className={`${
-                            region.engagement > 80
-                              ? "bg-green-100 text-green-800"
-                              : region.engagement > 70
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {region.engagement > 80
-                            ? "Excelente"
-                            : region.engagement > 70
-                            ? "Bueno"
-                            : "Mejorable"}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="challenges">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-[#c31f39]" />
-                  <span>Rendimiento de Desafíos</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {challengePerformance.map((challenge, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <h3 className="font-medium">{challenge.challenge}</h3>
-                        <span className="text-sm text-gray-600">
-                          {challenge.participants} participantes
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <Progress
-                          value={challenge.completion}
-                          className="flex-1"
-                        />
-                        <span className="text-sm font-medium w-12">
-                          {challenge.completion}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="impact">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <BarChart3 className="w-5 h-5 text-[#c31f39]" />
-                    <span>Impacto en Ventas</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                      <span className="font-medium">
-                        Incremento Promedio en Ventas
-                      </span>
-                      <span className="text-2xl font-bold text-green-600">
-                        +15.3%
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                      <span className="font-medium">
-                        Diversificación de Inventario
-                      </span>
-                      <span className="text-2xl font-bold text-blue-600">
-                        +23%
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
-                      <span className="font-medium">
-                        Adopción de Nuevos Productos
-                      </span>
-                      <span className="text-2xl font-bold text-purple-600">
-                        +18%
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Calendar className="w-5 h-5 text-[#c31f39]" />
-                    <span>Métricas de Retención</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm">Retención Semanal</span>
-                        <span className="text-sm font-medium">78%</span>
-                      </div>
-                      <Progress value={78} />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm">Retención Mensual</span>
-                        <span className="text-sm font-medium">65%</span>
-                      </div>
-                      <Progress value={65} />
-                    </div>
-                    <div>
-                      <div className="flex justify-between mb-2">
-                        <span className="text-sm">
-                          Usuarios Activos Diarios
-                        </span>
-                        <span className="text-sm font-medium">42%</span>
-                      </div>
-                      <Progress value={42} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </main>
-    </div>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
