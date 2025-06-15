@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import ReplyParrot from "@/components/reply-parrot";
+
 import {
   Trophy,
   Target,
@@ -140,6 +142,7 @@ export default function Dashboard() {
           </Card>
         </div>
         <div className="lg:col-span-5">
+          <ReplyParrot />
           <AnimatedParrot />
           {/* <GeminiRecommendation /> */}
           {/* <ProductQuantities /> */}
