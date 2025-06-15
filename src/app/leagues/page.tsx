@@ -222,7 +222,7 @@ export default function LeaguesPage() {
                                 : "bg-gradient-to-r from-[#CD7F32]/20 to-[#F97659]/20 text-[#CD7F32] border border-[#CD7F32]/30"
                           }`}
                         >
-                          Liga {store.league}
+                          Liga  {userCategory ? `Liga de ${userCategory}` : "Cargando Liga..."}
                         </Badge>
                       </div>
                     </div>

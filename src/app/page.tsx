@@ -7,6 +7,8 @@ import ProductQuantities from "@/components/product-quantities";
 import { useState } from "react";
 import ReplyParrot from "@/components/reply-parrot";
 import ChallengeCard from "@/components/challenge-card";
+import { getUserCategory } from "@/lib/api"
+import { useEffect } from "react";
 import {
   Trophy,
   Target,
@@ -23,6 +25,25 @@ import AnimatedParrot from "@/components/animated-parrot";
 // import GeminiRecommendation from "@/components/gemini-recommendation";
 
 export default function Dashboard() {
+  const [userCategory, setUserCategory] = useState<string | null>(null);
+  const [userMeses, setMeses] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+  
+    // Función para obtener la categoría del usuario
+    const fetchUserCategory = async (id: number) => {
+      setLoading(true);
+      const data = await getUserCategory(id);
+      if (data) {
+        setUserCategory(data.categoria); // Asignamos la categoría obtenida
+        setMeses(data.meses_consecutivos)
+      }
+      setLoading(false);
+    };
+  
+    useEffect(() => {
+      fetchUserCategory(1005); 
+    }, []);
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-1">
       {/* Hero Section */}
@@ -32,8 +53,7 @@ export default function Dashboard() {
           <div>
             <h1 className="text-4xl font-bold mb-4">¡Bienvenida, María!</h1>
             <p className="text-lg mb-6 opacity-90">
-              Tu tienda está en la <strong>Liga de Plata</strong>. ¡Sigue
-              mejorando para alcanzar el Oro!
+              Tu tienda está en la <strong>{userCategory ? `Liga de ${userCategory}` : "Cargando..."}</strong>. ¡Sigue mejorando para alcanzar el Diamante!
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/leagues">
@@ -59,16 +79,16 @@ export default function Dashboard() {
             <Card className="bg-[#a4d4d8]/40  border-white/20 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <Trophy className="w-8 h-8 mx-auto mb-2 text-[#FFF]" />
-                <div className="text-white text-2xl font-bold">Plata</div>
+                <div className="text-white text-2xl font-bold">{userCategory ? `${userCategory}` : "Cargando..."}</div>
                 <div className="text-white text-sm opacity-90">Liga Actual</div>
               </CardContent>
             </Card>
             <Card className="bg-[#a4d4d8]/40  border-white/20 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <Target className="w-8 h-8 mx-auto mb-2 text-[#FFF]" />
-                <div className="text-white text-2xl font-bold">3</div>
+                <div className="text-white text-2xl font-bold">{userMeses ? `${userMeses}` : "Cargando..."}</div>
                 <div className="text-white text-sm opacity-90">
-                  Retos Activos
+                  Racha de meses
                 </div>
               </CardContent>
             </Card>
