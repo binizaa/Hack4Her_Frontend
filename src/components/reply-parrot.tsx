@@ -10,7 +10,10 @@ interface ReplyParrotProps {
   customMessage?: string;
 }
 
-export default function ReplyParrot({ sentiment = 0, customMessage }: ReplyParrotProps) {
+export default function ReplyParrot({
+  sentiment = 0,
+  customMessage,
+}: ReplyParrotProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +39,7 @@ export default function ReplyParrot({ sentiment = 0, customMessage }: ReplyParro
       {loading ? (
         <p className="text-gray-500">Tua está pensando... 🧠</p>
       ) : (
-        <div className="w-100 mx-auto bg-yellow-50 p-2 rounded shadow">
+        <div className="w-100 mx-auto bg-white-50 p-2 rounded shadow-lg">
           <p className="text-2rem text-gray-800 font-medium italic ">
             "{message}"
           </p>

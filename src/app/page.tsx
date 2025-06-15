@@ -35,6 +35,9 @@ export default function Dashboard() {
               Tu tienda está en la <strong>Liga de Plata</strong>. ¡Sigue
               mejorando para alcanzar el Oro!
             </p>
+            <p className="text-lg mb-6 opacity-90">
+              Tamaño de tienda: <strong>Micro</strong>
+            </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/leagues">
                 <Button

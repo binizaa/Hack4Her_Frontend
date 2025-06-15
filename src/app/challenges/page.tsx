@@ -8,6 +8,7 @@ import AnimatedParrot from "@/components/animated-parrot";
 import { useState, useEffect } from "react";
 import { fetchExplorationData } from "@/lib/api";
 import { ExplorationData } from "@/lib/api";
+import { useUser } from "@/context/UserContext";
 
 import {
   Target,
@@ -65,6 +66,8 @@ export default function ChallengesPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+
+  const { currentUserId: clientId } = useUser();
 
   const activeChallenges: ActiveChallenge[] = [
     {
@@ -248,7 +251,6 @@ export default function ChallengesPage() {
     // Aquí podrías agregar lógica adicional que necesites cuando se inicie el reto
   };
 
-  const clientId = 1; // Este sería el id del cliente
   const category = "volumen"; // El nombre de la categoría
 
   useEffect(() => {
