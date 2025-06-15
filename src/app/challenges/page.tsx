@@ -9,19 +9,7 @@ import { useState, useEffect } from "react";
 import { fetchExplorationData } from "@/lib/api";
 import { ExplorationData } from "@/lib/api";
 
-import {
-  Target,
-  Clock,
-  Star,
-  Package,
-  TrendingUp,
-  CheckCircle,
-  Zap,
-  Award,
-  Trophy,
-  X,
-  Circle,
-} from "lucide-react";
+import { Target, Clock, Star, Package, TrendingUp, CheckCircle, Zap, Award, Trophy, X, Circle } from 'lucide-react';
 
 interface ChallengeStep {
   id: number;
@@ -211,18 +199,20 @@ export default function ChallengesPage() {
   const handleCloseSidebar = () => {
     setSelectedChallenge(null);
   };
-  const [data, setData] = useState<ExplorationData | null>(null);
+  const [dataExplo, setDataExplo] = useState<ExplorationData | null>(null);
+  const [dataVolumen, setDataVolumen] = useState<ExplorationData | null>(null);
+  const [dataActivacion, setDataActivacion] = useState<ExplorationData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const clientId = 1; // Este sería el id del cliente
   const category = "volumen"; // El nombre de la categoría
   // Declaramos la función getData correctamente fuera de useEffect
   useEffect(() => {
-    const getData = async () => {
+    const getDataExplo = async () => {
       try {
-        const result = await fetchExplorationData(clientId, category);
+        const result = await fetchExplorationData(clientId, "exploracion");
         console.log(result);  // Asegúrate de que los datos están siendo recibidos correctamente
-        setData(result);  // Guardamos los datos en el estado
+        setDataExplo(result);  // Guardamos los datos en el estado
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);  // Accedemos de forma segura al mensaje
@@ -232,9 +222,46 @@ export default function ChallengesPage() {
       }
     };
 
-    getData();
+    getDataExplo();
   }, [clientId, category]);
 
+  // Para los datos de "Volumen"
+useEffect(() => {
+  const getDataVolumen = async () => {
+    try {
+      const result = await fetchExplorationData(clientId, "volumen");
+      console.log(result);  // Asegúrate de que los datos están siendo recibidos correctamente
+      setDataVolumen(result);  // Guardamos los datos en el estado
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);  // Accedemos de forma segura al mensaje
+      } else {
+        setError("Error desconocido");
+      }
+    }
+  };
+
+  getDataVolumen();
+}, [clientId]); // Dependencia de clientId, puedes ajustarlo si es necesario
+
+// Para los datos de "Activación"
+useEffect(() => {
+  const getDataActivacion = async () => {
+    try {
+      const result = await fetchExplorationData(clientId, "activacion");
+      console.log(result);  // Asegúrate de que los datos están siendo recibidos correctamente
+      setDataActivacion(result);  // Guardamos los datos en el estado
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);  // Accedemos de forma segura al mensaje
+      } else {
+        setError("Error desconocido");
+      }
+    }
+  };
+
+  getDataActivacion();
+}, [clientId]); // Dependencia de clientId, puedes ajustarlo si es necesario
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -265,6 +292,7 @@ export default function ChallengesPage() {
             } h-[70vh] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-[#F97659] scrollbar-track-gray-100`}
           >
             <div className="grid grid-cols-1 gap-8">
+              
               {activeChallenges.map((challenge) => (
                 <Card
                   key={challenge.id}
@@ -468,16 +496,30 @@ export default function ChallengesPage() {
             <h2 className="text-2xl font-bold mb-6 text-[#1A1926]">
               Retos Completados
             </h2>
-            <Card className="border-2 border-[#A4D4D8]/30">
-              <CardContent className="p-0">
-                <div className="space-y-0">
+            <Card className="border-2 border-[#A4D4D8]/30 bg-gradient-to-r from-[#A4D4D8]/10 to-[#4DB9E8]/10 hover:shadow-xl transition-all duration-300">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#A4D4D8] to-[#4DB9E8] rounded-xl flex items-center justify-center shadow-lg">
+                    <Trophy className="w-6 h-6 text-white" />
+                  </div>
+                  <Badge variant="outline" className="text-xs border-[#4DB9E8] text-[#4DB9E8]">
+                    <Award className="w-3 h-3 mr-1" />
+                    Completados
+                  </Badge>
+                </div>
+                <CardTitle className="text-lg text-[#1A1926]">
+                  Retos Completados
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
                   {completedChallenges.map((challenge, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 border-b last:border-b-0 hover:bg-[#A4D4D8]/5 transition-colors"
+                      className="flex items-center justify-between p-4 bg-white/50 rounded-lg border border-[#A4D4D8]/20 hover:bg-white/80 transition-all duration-200"
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] rounded-full flex items-center justify-center shadow-md">
                           <CheckCircle className="w-5 h-5 text-white" />
                         </div>
                         <div>
@@ -503,56 +545,261 @@ export default function ChallengesPage() {
           </div>
 
           {/* Challenge Stats */}
-          <Card className="border-2 border-[#4DB9E8]/30 bg-gradient-to-r from-[#4DB9E8]/5 to-[#A4D4D8]/5">
+          <Card className="border-2 border-[#F97659]/30 bg-gradient-to-r from-[#F97659]/10 to-[#c31f39]/10 hover:shadow-xl transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-[#1A1926]">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#F97659] to-[#c31f39] rounded-xl flex items-center justify-center shadow-lg">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <Badge variant="outline" className="text-xs border-[#F97659] text-[#F97659]">
+                  <Target className="w-3 h-3 mr-1" />
+                  Estadísticas
+                </Badge>
+              </div>
+              <CardTitle className="text-lg text-[#1A1926]">
                 Estadísticas de Retos
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-gradient-to-r from-[#A4D4D8]/20 to-[#4DB9E8]/20 rounded-xl border border-[#4DB9E8]/30">
+                <div className="text-center p-4 bg-gradient-to-r from-[#A4D4D8]/20 to-[#4DB9E8]/20 rounded-xl border-2 border-[#4DB9E8]/30 hover:shadow-md transition-all duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <CheckCircle className="w-4 h-4 text-white" />
+                  </div>
                   <div className="text-2xl font-bold text-[#4DB9E8]">12</div>
-                  <div className="text-sm text-gray-600">Completados</div>
+                  <div className="text-sm text-gray-600 font-medium">Completados</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-r from-[#F97659]/20 to-[#c31f39]/20 rounded-xl border border-[#F97659]/30">
+                <div className="text-center p-4 bg-gradient-to-r from-[#F97659]/20 to-[#c31f39]/20 rounded-xl border-2 border-[#F97659]/30 hover:shadow-md transition-all duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Clock className="w-4 h-4 text-white" />
+                  </div>
                   <div className="text-2xl font-bold text-[#c31f39]">3</div>
-                  <div className="text-sm text-gray-600">En Progreso</div>
+                  <div className="text-sm text-gray-600 font-medium">En Progreso</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-r from-[#c31f39]/20 to-[#1A1926]/20 rounded-xl border border-[#c31f39]/30">
+                <div className="text-center p-4 bg-gradient-to-r from-[#c31f39]/20 to-[#1A1926]/20 rounded-xl border-2 border-[#c31f39]/30 hover:shadow-md transition-all duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#c31f39] to-[#1A1926] rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Target className="w-4 h-4 text-white" />
+                  </div>
                   <div className="text-2xl font-bold text-[#c31f39]">85%</div>
-                  <div className="text-sm text-gray-600">Tasa de Éxito</div>
+                  <div className="text-sm text-gray-600 font-medium">Tasa de Éxito</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-to-r from-[#F97659]/20 to-[#A4D4D8]/20 rounded-xl border border-[#F97659]/30">
+                <div className="text-center p-4 bg-gradient-to-r from-[#F97659]/20 to-[#A4D4D8]/20 rounded-xl border-2 border-[#F97659]/30 hover:shadow-md transition-all duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#F97659] to-[#A4D4D8] rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Star className="w-4 h-4 text-white" />
+                  </div>
                   <div className="text-2xl font-bold text-[#F97659]">1,680</div>
-                  <div className="text-sm text-gray-600">Puntos Ganados</div>
+                  <div className="text-sm text-gray-600 font-medium">Puntos Ganados</div>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-      <div>
-      <h1>Datos de Exploración</h1>
-      {data ? (
-        <>
-          <h3>{data.nombre}</h3>
-          <p>{data.frase}</p>
-          <ul>
-            {/* Aquí iteramos sobre los productos */}
-            {Object.entries(data.productos).map(([key, value], index) => (
-              <li key={index}>
-                <div>
-                  <strong>{key}:</strong> {JSON.stringify(value)}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <div>Cargando...</div>
-      )}
-    </div>
+      {/* Data Cards Section */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6 flex items-center text-[#1A1926]">
+          <div className="w-8 h-8 bg-gradient-to-r from-[#4DB9E8] to-[#A4D4D8] rounded-lg flex items-center justify-center mr-3">
+            <Package className="w-5 h-5 text-white" />
+          </div>
+          Datos de Productos
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Data Exploración Card */}
+          {dataExplo && (
+            <div className="grid grid-cols-1 gap-8">
+              <Card className="border-2 border-[#F97659]/30 bg-gradient-to-r from-[#F97659]/10 to-[#c31f39]/10 hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#F97659] to-[#c31f39] rounded-xl flex items-center justify-center shadow-lg">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className="text-xs border-[#F97659] text-[#F97659]"
+                    >
+                      <Clock className="w-3 h-3 mr-1" />
+                      Exploración
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg text-[#1A1926]">
+                    {dataExplo.nombre}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {dataExplo.frase}
+                  </p>
+
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-[#1A1926] font-medium">
+                          Progreso
+                        </span>
+                        <span className="text-[#F97659] font-bold">
+                          0%
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Progress
+                          value={0}
+                          className="h-3"
+                        />
+                        <div
+                          className="absolute inset-0 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-full transition-all duration-500"
+                          style={{ width: `0%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Producto recomendado */}
+                    <div className="bg-white/50 rounded-lg p-3 border border-[#F97659]/20">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <Package className="w-4 h-4 text-[#F97659]" />
+                          <span className="text-sm font-bold text-[#c31f39]">
+                            Producto Recomendado
+                          </span>
+                        </div>
+                        <Badge className="text-xs bg-[#F97659]/20 text-[#F97659] border border-[#F97659]/30">
+                          {dataExplo.productos.categoria}
+                        </Badge>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-[#1A1926]">
+                          {dataExplo.productos.producto}
+                        </p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">
+                            Cantidad estimada:
+                          </span>
+                          <span className="text-xs font-bold text-[#c31f39]">
+                            {dataExplo.productos.cantidad_estimada} unidades
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button className="w-full bg-gradient-to-r from-[#F97659] to-[#c31f39] hover:shadow-lg transition-all duration-300 border-0">
+                      <Zap className="w-4 h-4 mr-2" />
+                      Ver Detalles de Exploración
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Data Volumen Card */}
+          {dataVolumen && (
+            <div className="grid grid-cols-1 gap-8">
+              <Card className="border-2 border-[#4DB9E8]/30 bg-gradient-to-r from-[#A4D4D8]/10 to-[#4DB9E8]/10 hover:shadow-xl transition-all duration-300">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#A4D4D8] to-[#4DB9E8] rounded-xl flex items-center justify-center shadow-lg">
+                      <Star className="w-6 h-6 text-white" />
+                    </div>
+                    <Badge variant="outline" className="text-xs border-[#4DB9E8] text-[#4DB9E8]">
+                      <Clock className="w-3 h-3 mr-1" />
+                      Volumen
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg text-[#1A1926]">
+                    {dataVolumen.nombre}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {dataVolumen.frase}
+                  </p>
+
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-[#1A1926] font-medium">
+                          Progreso
+                        </span>
+                        <span className="text-[#4DB9E8] font-bold">
+                          0%
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Progress value={0} className="h-3" />
+                        <div
+                          className="absolute inset-0 bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] rounded-full transition-all duration-500"
+                          style={{ width: `0%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Producto recomendado */}
+                    <div className="bg-white/50 rounded-lg p-3 border border-[#4DB9E8]/20">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <Package className="w-4 h-4 text-[#4DB9E8]" />
+                          <span className="text-sm font-bold text-[#4DB9E8]">
+                            Aumenta tus ventas con este reto!!!
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-[#1A1926]">
+                          {dataVolumen.productos.producto_recomendado}
+                        </p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">
+                            Volumen estimado:
+                          </span>
+                          <span className="text-xs font-bold text-[#4DB9E8]">
+                            {dataVolumen.productos.volumen_estimado} L
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button className="w-full bg-gradient-to-r from-[#A4D4D8] to-[#4DB9E8] hover:shadow-lg transition-all duration-300 border-0">
+                      <Zap className="w-4 h-4 mr-2" />
+                      Ver Detalles de Volumen
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Loading States */}
+          {!dataExplo && (
+            <div className="grid grid-cols-1 gap-8">
+              <Card className="border-2 border-[#F97659]/30 bg-gradient-to-r from-[#F97659]/10 to-[#c31f39]/10">
+                <CardContent className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#F97659] to-[#c31f39] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-[#1A1926] font-medium">Cargando datos de exploración...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {!dataVolumen && (
+            <div className="grid grid-cols-1 gap-8">
+              <Card className="border-2 border-[#4DB9E8]/30 bg-gradient-to-r from-[#A4D4D8]/10 to-[#4DB9E8]/10">
+                <CardContent className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#A4D4D8] to-[#4DB9E8] rounded-xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+                      <Star className="w-6 h-6 text-white" />
+                    </div>
+                    <p className="text-[#1A1926] font-medium">Cargando datos de volumen...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      </div>
     </main>
   );
 }
