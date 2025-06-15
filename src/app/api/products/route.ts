@@ -1,18 +1,27 @@
 import { NextResponse } from "next/server";
 
-// Simulando la respuesta de la API de FastAPI
-const dummyData = [
-  { product_name: "Laptop", quantity: 100 },
-  { product_name: "Mouse", quantity: 250 },
-  { product_name: "Teclado", quantity: 180 },
-];
-
 export async function GET() {
   try {
-    return NextResponse.json(dummyData);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al obtener los productos del backend");
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
+    console.error("Error en la API de productos:", error);
     return NextResponse.json(
-      { error: "Error al obtener los datos" },
+      { error: "Error al obtener los datos del backend" },
       { status: 500 }
     );
   }

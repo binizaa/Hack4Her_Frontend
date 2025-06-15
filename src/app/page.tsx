@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useState } from "react";
 import {
   Trophy,
   Target,
@@ -14,6 +15,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import ProductQuantities from "@/components/product-quantities";
+
+// Componentes adicionales
+import AnimatedParrot from "@/components/animated-parrot";
+// import GeminiRecommendation from "@/components/gemini-recommendation";
 
 export default function Dashboard() {
   return (
@@ -135,7 +140,9 @@ export default function Dashboard() {
           </Card>
         </div>
         <div className="lg:col-span-5">
-          <ProductQuantities />
+          <AnimatedParrot />
+          {/* <GeminiRecommendation /> */}
+          {/* <ProductQuantities /> */}
         </div>
       </div>
 
