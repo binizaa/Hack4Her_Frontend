@@ -13,6 +13,7 @@ import {
   Award,
 } from "lucide-react";
 import Link from "next/link";
+import ProductQuantities from "@/components/product-quantities";
 
 export default function Dashboard() {
   return (
@@ -133,8 +134,8 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-        <div className="lg:col-span-5 hidden lg:block">
-          {/* Espacio reservado para el elemento futuro */}
+        <div className="lg:col-span-5">
+          <ProductQuantities />
         </div>
       </div>
 
