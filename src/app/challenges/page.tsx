@@ -930,7 +930,7 @@ export default function ChallengesPage() {
                             Volumen estimado:
                           </span>
                           <span className="text-xs font-bold text-[#4DB9E8]">
-                            {dataVolumen.productos.volumen_estimado} L
+                            {dataVolumen.productos.volumen_estimado} unidades
                           </span>
                         </div>
                       </div>

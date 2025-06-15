@@ -35,3 +35,26 @@ export const fetchExplorationData = async (
     throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 };
+
+// Definir el tipo de la respuesta de la API
+export interface UserCategoryResponse {
+  _id: string;
+  id_cliente: number;
+  meses_consecutivos: number;
+  categoria: string;
+}
+
+// Función para obtener la categoría de un usuario
+export const getUserCategory = async (id: number): Promise<UserCategoryResponse | null> => {
+  try {
+    const res = await fetch(`http://localhost:8000/users/user-category/${id}`);  // Usa la URL completa
+    if (!res.ok) {
+      throw new Error('Failed to fetch user category');
+    }
+    const data: UserCategoryResponse = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
