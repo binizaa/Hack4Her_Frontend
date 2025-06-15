@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import ReplyParrot from "@/components/reply-parrot";
+import ChallengeCard from "@/components/challenge-card";
 
 import {
   Trophy,
@@ -24,7 +25,7 @@ import AnimatedParrot from "@/components/animated-parrot";
 
 export default function Dashboard() {
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-1">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#c31f39] via-[#F97659] to-[#4DB9E8] rounded-2xl p-8 text-white mb-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
@@ -193,7 +194,7 @@ export default function Dashboard() {
         <Card className="hover:shadow-xl transition-all duration-300 group border-2 border-transparent hover:border-[#c31f39]/20">
           <Link href="/challenges">
             <CardContent className="p-6 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#c31f39] to-[#F97659] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-16 h-16 mx-auto mb-2 bg-gradient-to-br from-[#c31f39] to-[#F97659] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Target className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold mb-2 text-[#1A1926]">

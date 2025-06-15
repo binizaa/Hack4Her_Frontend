@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { Home, Trophy, Target, Gift } from "lucide-react"
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Home, Trophy, Target, Gift } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
-  { name: "Ligas", href: "/leagues", icon: Trophy },
   { name: "Retos", href: "/challenges", icon: Target },
+  { name: "Ligas", href: "/leagues", icon: Trophy },
   { name: "Recompensas", href: "/rewards", icon: Gift },
-]
+];
 
 export default function Navigation() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-50">
@@ -26,7 +26,7 @@ export default function Navigation() {
 
           <nav className="hidden md:flex space-x-8">
             {navigation.map((item) => {
-              const isActive = pathname === item.href
+              const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.name}
@@ -40,7 +40,7 @@ export default function Navigation() {
                   <item.icon className="w-4 h-4" />
                   <span>{item.name}</span>
                 </Link>
-              )
+              );
             })}
           </nav>
 
@@ -57,7 +57,7 @@ export default function Navigation() {
       <div className="md:hidden border-t bg-white">
         <div className="flex justify-around py-2">
           {navigation.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
@@ -69,10 +69,10 @@ export default function Navigation() {
                 <item.icon className="w-5 h-5 mb-1" />
                 <span>{item.name}</span>
               </Link>
-            )
+            );
           })}
         </div>
       </div>
     </header>
-  )
+  );
 }
