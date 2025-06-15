@@ -1,7 +1,13 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { useState, useEffect } from "react";
+import { fetchExplorationData } from "@/lib/api";
+import { ExplorationData } from "@/lib/api";
+
 import {
   Target,
   Clock,
@@ -22,7 +28,7 @@ const activeChallenges = [
     progress: 0,
     reward: 180,
     timeLeft: "25 días",
-    difficulty: "Medio",
+    difficulty: "Explorador",
     icon: TrendingUp,
     gradientFrom: "from-[#F97659]",
     gradientTo: "to-[#c31f39]",
@@ -37,7 +43,7 @@ const activeChallenges = [
     progress: 0,
     reward: 250,
     timeLeft: "15 días",
-    difficulty: "Fácil",
+    difficulty: "Activación",
     icon: Package,
     gradientFrom: "from-[#A4D4D8]",
     gradientTo: "to-[#4DB9E8]",
@@ -52,7 +58,7 @@ const activeChallenges = [
     progress: 0,
     reward: 320,
     timeLeft: "30 días",
-    difficulty: "Difícil",
+    difficulty: "Volumen",
     icon: Star,
     gradientFrom: "from-[#c31f39]",
     gradientTo: "to-[#1A1926]",
@@ -120,6 +126,30 @@ const completedChallenges = [
 ];
 
 export default function ChallengesPage() {
+  const [data, setData] = useState<ExplorationData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const clientId = 1; // Este sería el id del cliente
+  const category = "exploracion"; // El nombre de la categoría
+  // Declaramos la función getData correctamente fuera de useEffect
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const result = await fetchExplorationData(clientId, category);
+        setData(result);  // Guardamos los datos en el estado
+      } catch (error: unknown) {  // Especificamos que el error es de tipo unknown
+        if (error instanceof Error) {
+          setError(error.message);  // Accedemos de forma segura al mensaje
+        } else {
+          setError("Error desconocido");  // En caso de que el error no sea una instancia de Error
+        }
+      }
+    };
+
+    getData();  // Llamamos a la función después de declararla
+
+  }, [clientId, category]);  // Dependencias
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
@@ -297,6 +327,27 @@ export default function ChallengesPage() {
           </Card>
         </div>
       </div>
+      <div>
+      <h1>Datos de Exploración</h1>
+      {data ? (
+        <>
+          <h3>{data.nombre}</h3>
+          <p>{data.frase}</p>
+          <ul>
+            {/* Aquí iteramos sobre los productos */}
+            {Object.entries(data.productos).map(([key, value], index) => (
+              <li key={index}>
+                <div>
+                  <strong>{key}:</strong> {JSON.stringify(value)}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <div>Cargando...</div>
+      )}
+    </div>
     </main>
   );
 }
