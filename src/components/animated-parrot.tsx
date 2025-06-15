@@ -16,18 +16,35 @@ const parrotStates = [
       "/imagenesguac/g6-desepcionado.png",
       "/imagenesguac/g5-triste.png",
     ],
-    loopSpeed: 2400,
+    loopSpeed: 5000,
   },
   {
     id: "emocionado",
-    images: ["/imagenesguac/habla1.png", "/imagenesguac/excelente.png"],
-    loopSpeed: 1600,
+    images: ["/imagenesguac/excelente.png", "/imagenesguac/habla2.png"],
+    loopSpeed: 7000,
   },
 ];
 
-export default function AnimatedParrot() {
+interface AnimatedParrotProps {
+  size?: "normal" | "large" | "xlarge";
+  emotion?: "happy" | "excited" | "neutral" | "sad";
+}
+
+export default function AnimatedParrot({
+  size = "normal",
+  emotion = "neutral",
+}: AnimatedParrotProps) {
   const [currentFrame, setCurrentFrame] = useState(0);
-  const currentParrot = parrotStates[0]; // Siempre usamos el estado feliz
+
+  // Define los estados del loro según la emoción
+  const parrotEmotions = {
+    happy: parrotStates[0],
+    excited: parrotStates[1],
+    neutral: parrotStates[2],
+    sad: parrotStates[3],
+  };
+
+  const currentParrot = parrotEmotions[emotion] || parrotStates[0];
 
   // Loop para cambiar frames dentro del estado actual
   useEffect(() => {
@@ -44,8 +61,14 @@ export default function AnimatedParrot() {
 
   const currentImage = currentParrot.images[currentFrame];
 
+  const sizes = {
+    normal: "w-[300px] h-[200px]",
+    large: "w-[400px] h-[300px]",
+    xlarge: "w-[500px] h-[400px]",
+  };
+
   return (
-    <div className="flex items-center justify-center w-[300px] h-[200px] mx-auto">
+    <div className={`flex items-center justify-center ${sizes[size]} mx-auto`}>
       <AnimatePresence mode="wait">
         <motion.div
           key={`${currentParrot.id}-${currentFrame}`}
