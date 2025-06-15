@@ -37,7 +37,9 @@ export async function POST(request: Request) {
       history: formattedMessages,
     });
 
-    const result = await chat.sendMessage([prompt, messages[messages.length - 1].content].join('\n'));
+    const result = await chat.sendMessage(
+      [prompt, messages[messages.length - 1].content].join("\n")
+    );
     const response = await result.response;
     const responseText = response.text();
 

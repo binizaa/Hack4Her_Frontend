@@ -1,12 +1,16 @@
 // lib/api.ts
 export interface Product {
-  [key: string]: any;  // Permite cualquier propiedad dinámica
+  producto: string;
+  categoria: string;
+  cantidad_estimada: number;
+  producto_recomendado: string;
+  volumen_estimado: number;
 }
 
 export interface ExplorationData {
   nombre: string;
   frase: string;
-  productos: Product[];  // La lista de productos puede tener cualquier estructura
+  productos: Product; // Cambiado de Product[] a Product
 }
 
 export const fetchExplorationData = async (
@@ -21,13 +25,13 @@ export const fetchExplorationData = async (
       throw new Error(`Cliente no encontrado: ${clientId}`);
     }
     const data = await response.json();
-    
+
     // Usa console.log para imprimir los datos en la consola
     console.log("Hola", data);
 
     return data;
   } catch (error) {
     // This will catch errors like network issues or issues within the API
-    throw new Error(error instanceof Error ? error.message : 'Unknown error');
+    throw new Error(error instanceof Error ? error.message : "Unknown error");
   }
 };

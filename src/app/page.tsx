@@ -2,10 +2,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import ProductQuantities from "@/components/product-quantities";
 import { useState } from "react";
 import ReplyParrot from "@/components/reply-parrot";
 import ChallengeCard from "@/components/challenge-card";
-
 import {
   Trophy,
   Target,
@@ -16,8 +17,6 @@ import {
   Zap,
   Award,
 } from "lucide-react";
-import Link from "next/link";
-import ProductQuantities from "@/components/product-quantities";
 
 // Componentes adicionales
 import AnimatedParrot from "@/components/animated-parrot";
