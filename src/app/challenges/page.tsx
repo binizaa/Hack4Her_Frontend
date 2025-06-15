@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import ReplyParrot from "@/components/reply-parrot";
 import AnimatedParrot from "@/components/animated-parrot";
 import { useState, useEffect } from "react";
 import { fetchExplorationData } from "@/lib/api";
@@ -216,25 +215,26 @@ export default function ChallengesPage() {
   const [error, setError] = useState<string | null>(null);
 
   const clientId = 1; // Este sería el id del cliente
-  const category = "exploracion"; // El nombre de la categoría
+  const category = "volumen"; // El nombre de la categoría
   // Declaramos la función getData correctamente fuera de useEffect
   useEffect(() => {
     const getData = async () => {
       try {
         const result = await fetchExplorationData(clientId, category);
+        console.log(result);  // Asegúrate de que los datos están siendo recibidos correctamente
         setData(result);  // Guardamos los datos en el estado
-      } catch (error: unknown) {  // Especificamos que el error es de tipo unknown
+      } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);  // Accedemos de forma segura al mensaje
         } else {
-          setError("Error desconocido");  // En caso de que el error no sea una instancia de Error
+          setError("Error desconocido");
         }
       }
     };
 
-    getData();  // Llamamos a la función después de declararla
+    getData();
+  }, [clientId, category]);
 
-  }, [clientId, category]);  // Dependencias
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

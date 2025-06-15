@@ -23,7 +23,7 @@ export const fetchExplorationData = async (
     const data = await response.json();
     
     // Usa console.log para imprimir los datos en la consola
-    console.log(data);
+    console.log("Hola", data);
 
     return data;
   } catch (error) {
