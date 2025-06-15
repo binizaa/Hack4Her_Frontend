@@ -20,13 +20,13 @@ export default function ReplyParrot({ sentiment = 0 }: { sentiment?: number }) {
   }, [sentiment]);
 
   return (
-    <div className="text-center mt-8">
-      <h2 className="text-xl font-semibold mb-4">Mensaje de Tua 🦜</h2>
+    <div className="text-center">
+      <h2 className="text-xl font-semibold mb-2">Mensaje de Tua</h2>
       {loading ? (
         <p className="text-gray-500">Tua está pensando... 🧠</p>
       ) : (
-        <div className="max-w-md mx-auto bg-yellow-100 p-4 rounded shadow">
-          <p className="text-lg text-gray-800 font-medium italic">
+        <div className="w-100 mx-auto bg-yellow-50 p-2 rounded shadow">
+          <p className="text-2rem text-gray-800 font-medium italic ">
             "{message}"
           </p>
         </div>

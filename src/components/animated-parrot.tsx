@@ -45,7 +45,7 @@ export default function AnimatedParrot() {
   const currentImage = currentParrot.images[currentFrame];
 
   return (
-    <div className="relative w-[400px] h-[300px]">
+    <div className="flex items-center justify-center w-[300px] h-[200px] mx-auto">
       <AnimatePresence mode="wait">
         <motion.div
           key={`${currentParrot.id}-${currentFrame}`}
@@ -56,13 +56,14 @@ export default function AnimatedParrot() {
             duration: 0.2,
             ease: "easeInOut",
           }}
-          className="relative w-full h-full"
+          className="relative w-full h-full flex items-center justify-center"
         >
           <Image
             src={currentImage || "/placeholder.svg"}
             alt="Loro animado"
             fill
             className="object-contain drop-shadow-lg"
+            priority
           />
         </motion.div>
       </AnimatePresence>

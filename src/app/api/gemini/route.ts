@@ -1,7 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-// Validar que existe la API key
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY no está definida");
 }
@@ -20,19 +19,27 @@ export async function POST(request: Request) {
       );
     }
 
-    // Cargar el modelo
+    // Cambiamos a gemini-pro que es el modelo correcto
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    // Traducir los mensajes al formato de Gemini
-    const contents = messages.map((msg: any) => ({
-      role: msg.role, // debe ser "user" o "model"
-      parts: [{ text: msg.content }],
+    // Configuramos el contexto inicial para el asistente
+    const prompt = `Eres un asistente virtual de Tuali, una empresa mexicana. 
+    Debes ser amigable, empático y profesional. 
+    Responde de manera concisa y clara, usando un tono conversacional.`;
+
+    // Preparamos el historial incluyendo el contexto
+    const formattedMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      parts: msg.content,
     }));
 
-    // Enviar el historial completo
-    const result = await model.generateContent({ contents });
+    const chat = model.startChat({
+      history: formattedMessages,
+    });
 
-    const responseText = result.response.text();
+    const result = await chat.sendMessage([prompt, messages[messages.length - 1].content].join('\n'));
+    const response = await result.response;
+    const responseText = response.text();
 
     return NextResponse.json({ message: responseText });
   } catch (error: any) {
