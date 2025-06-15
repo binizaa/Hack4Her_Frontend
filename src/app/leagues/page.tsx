@@ -1,11 +1,15 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Trophy, Medal, Award, Gem, Star, Crown } from "lucide-react"
+import { getUserCategory } from "@/lib/api"
+import { useEffect, useState } from "react";
 
 const leagues = [
   {
-    name: "Liga de Bronce",
+    name: "Bronce",
     icon: Medal,
     color: "#CD7F32",
     bgColor: "bg-gradient-to-r from-[#CD7F32]/10 to-[#F97659]/10",
@@ -18,7 +22,7 @@ const leagues = [
     description: "Primeros pasos en Tuali",
   },
   {
-    name: "Liga de Plata",
+    name: "Plata",
     icon: Award,
     color: "#C0C0C0",
     bgColor: "bg-gradient-to-r from-[#A4D4D8]/10 to-[#4DB9E8]/10",
@@ -32,7 +36,7 @@ const leagues = [
     current: true,
   },
   {
-    name: "Liga de Oro",
+    name: "Oro",
     icon: Trophy,
     color: "#FFD700",
     bgColor: "bg-gradient-to-r from-[#F97659]/10 to-[#c31f39]/10",
@@ -45,7 +49,7 @@ const leagues = [
     description: "Excelencia en gestión",
   },
   {
-    name: "Liga de Diamante",
+    name: "Diamante",
     icon: Gem,
     color: "#B9F2FF",
     bgColor: "bg-gradient-to-r from-[#4DB9E8]/10 to-[#A4D4D8]/10",
@@ -71,6 +75,23 @@ const rankings = [
 ]
 
 export default function LeaguesPage() {
+  const [userCategory, setUserCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Función para obtener la categoría del usuario
+  const fetchUserCategory = async (id: number) => {
+    setLoading(true);
+    const data = await getUserCategory(id);
+    if (data) {
+      setUserCategory(data.categoria); // Asignamos la categoría obtenida
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchUserCategory(1005); 
+  }, []);
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
@@ -89,8 +110,9 @@ export default function LeaguesPage() {
                 <Award className="w-10 h-10 text-white" />
               </div>
               <div className="text-center lg:text-left">
-                <h2 className="text-3xl font-bold text-[#1A1926]">Liga de Plata</h2>
-                <p className="text-gray-600 text-lg">Posición #12 de 89 tiendas</p>
+                <h2 className="text-3xl font-bold text-[#1A1926]">
+                  {userCategory ? `Liga de ${userCategory}` : "Cargando Liga..."}
+                </h2>
                 <Badge className="mt-2 bg-gradient-to-r from-[#4DB9E8] to-[#A4D4D8] text-white border-0">
                   <Crown className="w-3 h-3 mr-1" />
                   Tu Liga Actual
@@ -130,7 +152,7 @@ export default function LeaguesPage() {
                       <div>
                         <h3 className={`text-xl font-bold ${league.textColor} flex items-center flex-wrap`}>
                           {league.name}
-                          {league.current && (
+                          {(league.name == userCategory) && (
                             <span className="ml-3 text-[#c31f39] flex items-center">
                               <Star className="w-4 h-4 mr-1" />
                               Tu Liga
@@ -154,43 +176,6 @@ export default function LeaguesPage() {
               </Card>
             ))}
           </div>
-
-          {/* Progress to Next League */}
-          <Card className="mt-6 border-2 border-[#F97659]/30 bg-gradient-to-r from-[#F97659]/5 to-[#c31f39]/5">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-lg flex items-center justify-center">
-                  <Trophy className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <span className="text-xl bg-gradient-to-r from-[#F97659] to-[#c31f39] bg-clip-text text-transparent font-bold">
-                    Progreso hacia Liga de Oro
-                  </span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">1,680 / 1,501 puntos</span>
-                  <span className="text-[#F97659] font-medium">
-                    ¡Ya calificaste! Sigue sumando para asegurar tu posición
-                  </span>
-                </div>
-                <div className="relative">
-                  <Progress value={100} className="h-4" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#F97659] to-[#c31f39] rounded-full"></div>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-green-50 to-[#A4D4D8]/20 rounded-lg border-2 border-green-200">
-                  <p className="text-sm text-green-800 font-medium flex items-center">
-                    <Trophy className="w-4 h-4 mr-2" />
-                    ¡Felicidades! Ya tienes los puntos suficientes para la Liga de Oro. El ascenso se realizará al final
-                    de la semana.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Rankings */}
